@@ -3,6 +3,8 @@ package com.example.csvtojson.service.impl;
 import com.example.csvtojson.service.ConfigProvider;
 import com.example.csvtojson.service.CsvFileHandler;
 import com.example.csvtojson.service.CsvFileWatcher;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
@@ -19,6 +21,8 @@ import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 @ApplicationScoped
 public class CsvFileWatcherImpl implements CsvFileWatcher {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     @Inject
     private ConfigProvider configProvider;
 
@@ -29,7 +33,7 @@ public class CsvFileWatcherImpl implements CsvFileWatcher {
 
     public void onStartUp(@Observes @Priority(Interceptor.Priority.PLATFORM_BEFORE + 1)
                           @Initialized(ApplicationScoped.class) Object obj) throws Exception{
-        System.out.println("CsvFileWatcherImpl Container started with "+obj);
+        LOGGER.info("CsvFileWatcherImpl Container started with " + obj);
 
         watchService = FileSystems.getDefault().newWatchService();
 

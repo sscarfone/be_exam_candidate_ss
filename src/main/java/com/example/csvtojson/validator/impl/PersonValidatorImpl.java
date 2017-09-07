@@ -3,6 +3,8 @@ package com.example.csvtojson.validator.impl;
 import com.example.csvtojson.model.Person;
 import com.example.csvtojson.validator.IllegalRecordException;
 import com.example.csvtojson.validator.PersonValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
@@ -15,13 +17,15 @@ import javax.interceptor.Interceptor;
 public class PersonValidatorImpl implements PersonValidator {
 
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public PersonValidatorImpl() {
 
     }
 
     public void onStartUp(@Observes @Priority(Interceptor.Priority.APPLICATION - 400)
                           @Initialized(ApplicationScoped.class) Object obj) throws Exception{
-        System.out.println("PersonValidatorImpl Container started with "+obj);
+        LOGGER.info("PersonValidatorImpl Container started with " + obj);
     }
 
     @Override

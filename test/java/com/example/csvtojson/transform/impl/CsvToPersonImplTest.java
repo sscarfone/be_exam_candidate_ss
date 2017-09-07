@@ -1,6 +1,7 @@
 package com.example.csvtojson.transform.impl;
 
-import org.apache.commons.csv.CSVRecord;
+import com.example.csvtojson.model.CsvRecord;
+import com.example.csvtojson.model.Person;
 import org.jboss.weld.junit4.WeldInitiator;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -14,7 +15,7 @@ import javax.enterprise.context.Initialized;
 import javax.enterprise.event.Observes;
 import javax.interceptor.Interceptor;
 
-import static com.example.csvtojson.model.Person.HeaderFields.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class CsvToPersonImplTest {
@@ -44,31 +45,40 @@ public class CsvToPersonImplTest {
     final private String LOCAL_MIDDLE_NAME = "Middle Name";
     final private String LOCAL_PHONE_NUM = "123-345-7890";
     final private String LOCAL_INTERNAL_ID = "1";
+    final private long RECORD_NUMBER = 2;
 
 
-    //@Test Final class cannot be mocked...
+    @Test
     public void testToPerson() throws Exception {
-        final CSVRecord csvRecord = context.mock(CSVRecord.class);
+        final CsvRecord csvRecord = context.mock(CsvRecord.class);
         context.checking(new Expectations() {{
-            allowing(csvRecord).get(FIRST_NAME);
+            allowing(csvRecord).getFirstName();
             will(returnValue(LOCAL_FIRST_NAME));
 
-            allowing(csvRecord).get(LAST_NAME);
+            allowing(csvRecord).getLastName();
             will(returnValue(LOCAL_LAST_NAME));
 
-            allowing(csvRecord).get(MIDDLE_NAME);
+            allowing(csvRecord).getMiddleName();
             will(returnValue(LOCAL_MIDDLE_NAME));
 
-            allowing(csvRecord).get(PHONE_NUM);
+            allowing(csvRecord).getPhoneNum();
             will(returnValue(LOCAL_PHONE_NUM));
 
-            allowing(csvRecord).get(INTERNAL_ID);
+            allowing(csvRecord).getInternalId();
             will(returnValue(LOCAL_INTERNAL_ID));
 
+            allowing(csvRecord).getRecordNumber();
+            will(returnValue(RECORD_NUMBER));
 
 
         }});
-        weld.select(CsvRecordToPersonImpl.class).get().toPerson(csvRecord);
+        Person person = weld.select(CsvRecordToPersonImpl.class).get().toPerson(csvRecord);
+        assertEquals(LOCAL_FIRST_NAME, person.getFirstName());
+        assertEquals(LOCAL_LAST_NAME, person.getLastName());
+        assertEquals(LOCAL_MIDDLE_NAME, person.getMiddleName());
+        assertEquals(LOCAL_PHONE_NUM, person.getPhoneNum());
+        assertEquals(LOCAL_INTERNAL_ID, person.getInternalId());
+
 
         context.assertIsSatisfied();
     }

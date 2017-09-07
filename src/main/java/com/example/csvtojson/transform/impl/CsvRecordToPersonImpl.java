@@ -1,8 +1,10 @@
 package com.example.csvtojson.transform.impl;
 
+import com.example.csvtojson.model.CsvRecord;
 import com.example.csvtojson.model.Person;
 import com.example.csvtojson.transform.CsvRecordToPerson;
-import org.apache.commons.csv.CSVRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
@@ -12,29 +14,29 @@ import javax.interceptor.Interceptor;
 
 public class CsvRecordToPersonImpl implements CsvRecordToPerson {
 
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public void onStartUp(@Observes @Priority(Interceptor.Priority.APPLICATION - 400)
                           @Initialized(ApplicationScoped.class) Object obj) throws Exception{
-        System.out.println("CsvRecordToPersonImpl Container started with "+obj);
+        LOGGER.info("CsvRecordToPersonImpl Container started with " + obj);
     }
 
 
     @Override
-    public Person toPerson(CSVRecord csvRecord) {
+    public Person toPerson(CsvRecord csvRecord) {
 
-        String internalId = csvRecord.get(Person.HeaderFields.INTERNAL_ID);
+        String internalId = csvRecord.getInternalId();
 
-        String firstName = csvRecord.get(Person.HeaderFields.FIRST_NAME);
+        String firstName = csvRecord.getFirstName();
 
-        String middleName = csvRecord.get(Person.HeaderFields.MIDDLE_NAME);
+        String middleName = csvRecord.getMiddleName();
 
-        String lastName = csvRecord.get(Person.HeaderFields.LAST_NAME);
+        String lastName = csvRecord.getLastName();
 
-        String phoneNum = csvRecord.get(Person.HeaderFields.PHONE_NUM);
+        String phoneNum = csvRecord.getPhoneNum();
 
         long recordNumber = csvRecord.getRecordNumber();
 
         return new Person(internalId, firstName, middleName, lastName, phoneNum, recordNumber);
-
     }
 }
